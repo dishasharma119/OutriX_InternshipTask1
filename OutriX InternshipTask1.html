@@ -1,0 +1,298 @@
+<html>
+<head>
+  <title>Helping Hands | Volunteer Portal</title>
+  <style>
+    :root {
+      --primary: #2c786c;
+      --accent: #cde7b0;
+      --light: #f6fff8;
+      --text: #222;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, var(--primary), #90c4b8);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .landing {
+      text-align: center;
+      color: white;
+      max-width: 600px;
+    }
+
+    .landing h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.2em;
+    }
+
+    .landing p {
+      font-size: 1.2em;
+      margin-bottom: 2em;
+    }
+
+    .btn-start {
+      padding: 15px 30px;
+      background: var(--accent);
+      color: var(--primary);
+      border: none;
+      border-radius: 25px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-start:hover {
+      background: #b9daa0;
+    }
+
+    .modal {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 400px;
+      display: none;
+    }
+
+    .modal h2 {
+      text-align: center;
+      color: var(--primary);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+    }
+
+    input {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button[type="submit"] {
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: #1e5e52;
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    #auth-choice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #auth-choice button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .dashboard {
+      display: none;
+      text-align: center;
+      color: white;
+    }
+
+    .dashboard h1 {
+      font-size: 2em;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: white;
+      color: var(--primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+
+<div class="landing" id="landing">
+  <h1>Helping Hands 🤝</h1>
+  <p>Together, we can make a difference. Join us as a volunteer and be a part of change.</p>
+  <button class="btn-start" onclick="openModal()">Join as Volunteer</button>
+</div>
+
+<div class="modal" id="modal">
+  <div id="auth-choice">
+    <h2>Welcome Volunteer</h2>
+    <button onclick="showLogin()">Login</button>
+    <button onclick="showRegister()">Register</button>
+  </div>
+
+  <form id="login-form" onsubmit="handleLogin(event)" style="display:none;">
+    <h2>Login</h2>
+    <input type="email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required />
+    <input type="password" id="login-password" placeholder="Password" required />
+    <button type="submit">Login</button>
+    <div class="error" id="login-error"></div>
+    <div class="toggle-link" onclick="showRegister()">Need an account? Register</div>
+  </form>
+
+  <form id="register-form" onsubmit="handleRegister(event)" style="display:none;">
+    <h2>Sign Up</h2>
+    <input type="text" id="register-name" placeholder="Full Name" required />
+    <input type="email" id="register-email" placeholder="Email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"  />
+    <input type="password" id="register-password" placeholder="Password" title="Minimum 6 characters, letters & numbers" />
+    <input type="password" id="confirm-password" placeholder="Confirm Password" required />
+    <button type="submit">Register</button>
+    <div class="error" id="register-error"></div>
+    <div class="toggle-link" onclick="showLogin()">Already registered? Login</div>
+  </form>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <h1>🌟 Welcome, <span id="user-name"></span>!</h1>
+  <p>Thank you for joining Helping Hands.</p>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById("modal").style.display = "block";
+    document.getElementById("landing").style.display = "none";
+  }
+
+  function showLogin() {
+    document.getElementById("auth-choice").style.display = "none";
+    document.getElementById("register-form").style.display = "none";
+    document.getElementById("login-form").style.display = "block";
+  }
+
+  function showRegister() {
+    document.getElementById("auth-choice").style.display = "none";
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("register-form").style.display = "block";
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById("register-name").value.trim();
+    const email = document.getElementById("register-email").value.trim();
+    const password = document.getElementById("register-password").value;
+    const confirm = document.getElementById("confirm-password").value;
+    const errorEl = document.getElementById("register-error");
+
+    if (password !== confirm) {
+      errorEl.textContent = "Passwords do not match.";
+      return;
+    }
+
+    const user = { name, email, password };
+    localStorage.setItem("user", JSON.stringify(user));
+    alert("Welcome to Helping Hands! Please log in.");
+    showLogin();
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+    const errorEl = document.getElementById("login-error");
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || storedUser.email !== email || storedUser.password !== password) {
+      errorEl.textContent = "Invalid email or password.";
+      return;
+    }
+
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("loggedInName", storedUser.name);
+    showDashboard();
+  }
+
+  function showDashboard() {
+    document.getElementById("modal").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("user-name").textContent = localStorage.getItem("loggedInName") || "Volunteer";
+  }
+
+  function logout() {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("loggedInName");
+    location.reload();
+  }
+
+  window.onload = function () {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      showDashboard();
+    }
+  };
+   function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById("register-name").value.trim();
+    const email = document.getElementById("register-email").value.trim();
+    const password = document.getElementById("register-password").value;
+    const confirm = document.getElementById("confirm-password").value;
+    const errorEl = document.getElementById("register-error");
+
+    if (password !== confirm) {
+      errorEl.textContent = "Passwords do not match.";
+      return;
+    }
+
+    const user = { name, email, password };
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("loggedInName", name);
+
+    window.location.href = "welcome.html";
+  }
+</script>
+
+</body>
+</html>
